@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Интерактивное демо первичного отбора заявок на усыновление.">
+<title>Pet Store · Отбор заявок на усыновление</title>
+<style>
+  :root { color-scheme: light; font-family: system-ui, sans-serif; color: #182528; background: #f5f4ef; }
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  a { color: inherit; text-underline-offset: .25em; }
+  button, input, select { font: inherit; }
+  main, .site-nav { width: min(1080px, calc(100% - 40px)); margin-inline: auto; }
+  .site-nav { min-height: 68px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid #d8ddd5; }
+  .site-nav strong { font-size: .95rem; }
+  .site-nav div { display: flex; gap: 20px; flex-wrap: wrap; }
+  .site-nav a { font-size: .9rem; }
+  header { padding: clamp(36px, 7vw, 80px) 0 36px; }
+  h1, h2, h3, p { margin: 0; }
+  h1 { font-size: clamp(2.1rem, 6.5vw, 4.7rem); line-height: 1.04; letter-spacing: -.055em; max-width: 17ch; }
+  header p { margin-top: 16px; color: #4e605f; line-height: 1.55; max-width: 58ch; }
+  .project { --ink: #125449; --wash: #e2f1e9; margin-bottom: 26px; background: white; border: 1px solid #d8ddd5; border-radius: 22px; overflow: hidden; scroll-margin-top: 12px; }
+  #magnit { --ink: #822738; --wash: #f8e7e9; }
+  .project-header { background: var(--wash); padding: clamp(20px, 4vw, 38px); }
+  .project-header span { display: block; color: var(--ink); font-weight: 750; margin-bottom: 8px; }
+  h2 { font-size: clamp(1.5rem, 4vw, 2.6rem); line-height: 1.08; letter-spacing: -.035em; }
+  .project-header p { margin-top: 10px; max-width: 66ch; line-height: 1.5; }
+  .columns { display: grid; grid-template-columns: 1fr 1fr; }
+  .panel { padding: clamp(20px, 4vw, 38px); min-width: 0; }
+  .panel + .panel { border-left: 1px solid #e1e5df; background: #fbfcfa; }
+  h3 { font-size: 1.1rem; }
+  .muted { color: #4e605f; font-size: .9rem; line-height: 1.5; margin-top: 8px; }
+  form { display: grid; gap: 13px; margin-top: 18px; }
+  label { display: grid; gap: 5px; font-size: .9rem; font-weight: 650; }
+  input, select { min-width: 0; width: 100%; border: 1px solid #a9b5b0; background: white; color: inherit; padding: 10px 11px; border-radius: 8px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 9px; align-items: center; }
+  button { cursor: pointer; border-radius: 9px; padding: 9px 13px; min-height: 42px; font-weight: 650; border: 1px solid var(--ink); background: var(--ink); color: white; }
+  button.secondary { color: var(--ink); background: white; }
+  button:disabled { opacity: .55; cursor: default; }
+  :focus-visible { outline: 2px solid #1757b3; outline-offset: 3px; }
+  output { display: block; margin: 12px 0 18px; min-height: 3em; padding: 11px 13px; border-radius: 9px; background: var(--wash); color: var(--ink); line-height: 1.45; }
+  .metrics { display: flex; flex-wrap: wrap; gap: 10px 28px; margin: 10px 0; }
+  .metrics strong { display: block; font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+  .metrics span { display: block; color: #4e605f; font-size: .88rem; }
+  ul { margin: 10px 0 0; padding-left: 1.2em; line-height: 1.55; overflow-wrap: anywhere; }
+  details { border-top: 1px solid #e1e5df; padding: 15px clamp(20px, 4vw, 38px) 19px; }
+  summary { width: fit-content; cursor: pointer; color: var(--ink); font-weight: 650; }
+  pre { white-space: pre-wrap; overflow-wrap: anywhere; font: .83rem/1.5 ui-monospace, monospace; background: var(--wash); border-radius: 8px; padding: 10px; }
+  footer { padding: 0 0 32px; color: #4e605f; font-size: .88rem; }
+  @media (max-width: 650px) {
+    .columns { grid-template-columns: minmax(0, 1fr); }
+    .panel + .panel { border-left: 0; border-top: 1px solid #e1e5df; }
+    .site-nav div { gap: 10px; }
+  }
+
+  .demo { padding-top: 24px; }
+  .guide { padding: 18px clamp(20px, 4vw, 38px); border-bottom: 1px solid #e1e5df; }
+  .guide ol { margin: 10px 0 0; padding-left: 1.35em; line-height: 1.55; }
+  .guide li + li { margin-top: 5px; }
+  .project-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  @media (max-width: 650px) { .project-links { grid-template-columns: minmax(0, 1fr); gap: 0; } }
+</style>
+</head>
+<body>
+<div class="site-nav"><strong>Pet Store · CRM приюта</strong></div>
+<main class="demo">
+  <section class="project" id="pet-store" aria-labelledby="pet-title">
+    <div class="project-header">
+      <span>Pet Store · CRM приюта</span>
+      <h2 id="pet-title">Первичный отбор заявок</h2>
+      <p>Система проверяет телефон кандидата. В очередь менеджера попадают только заявки, прошедшие проверку.</p>
+    </div>
+    <div class="guide" aria-labelledby="guide-title">
+      <h3 id="guide-title">Как проверить демо</h3>
+      <p class="muted">Откройте этот HTML-файл в браузере. Он работает без интернета, установки и аккаунта. Используйте готовые тестовые данные.</p>
+      <ol>
+        <li>Оставьте кандидата «Иван Иванов» и нажмите <strong>«Отправить заявку»</strong>. Заявка получит статус «На рассмотрении» и появится в очереди менеджера.</li>
+        <li>Выберите «Пётр Петров · номер в стоп-листе» и снова нажмите <strong>«Отправить заявку»</strong>. Заявка будет отклонена, а в очереди останется одна запись.</li>
+      </ol>
+      <p class="muted">Кнопка «Сбросить» возвращает демо в исходное состояние.</p>
+    </div>
+    <div class="columns">
+      <div class="panel">
+        <h3>Заявка кандидата</h3>
+        <form id="adoption-form">
+          <label>Тестовый кандидат
+            <select name="candidate">
+              <option value="normal">Иван Иванов · обычная заявка</option>
+              <option value="blocked">Пётр Петров · номер в стоп-листе</option>
+            </select>
+          </label>
+          <label>Телефон
+            <input name="phone" type="tel" value="+7 999 111-22-33" required maxlength="24" autocomplete="off">
+          </label>
+          <label>Питомец
+            <select name="animal">
+              <option value="barsik">Барсик · кот</option>
+              <option value="luna">Луна · собака</option>
+            </select>
+          </label>
+          <div class="actions">
+            <button type="submit">Отправить заявку</button>
+            <button type="button" class="secondary" id="adoption-reset">Сбросить</button>
+          </div>
+        </form>
+      </div>
+      <div class="panel">
+        <h3>Результат проверки</h3>
+        <output id="adoption-result" aria-live="polite">Выберите кандидата и отправьте заявку.</output>
+        <h3>Очередь менеджера <span id="queue-count">(0)</span></h3>
+        <p class="muted" id="queue-empty">Заявок пока нет.</p>
+        <ul id="adoption-queue" hidden></ul>
+      </div>
+    </div>
+    <details>
+      <summary>Данные запроса и исходные материалы</summary>
+      <p class="muted">Пример тела запроса POST /api/v1/adoption-requests после отправки формы.</p>
+      <pre id="adoption-json">Отправьте тестовую заявку.</pre>
+      <a href="https://github.com/Vaskva/crm_pet_store">Репозиторий · BPMN, ER-диаграмма и SQL</a>
+    </details>
+  </section>
+  <footer>Офлайн-демо. Данные сбрасываются при обновлении страницы. Ссылка на GitHub требует интернета.</footer>
+</main>
+<noscript><p>Для запуска сценария включите JavaScript в браузере.</p></noscript>
+<script>
+  const byId = id => document.getElementById(id);
+  const candidates = {
+    normal: { name: 'Иван Иванов', phone: '+7 999 111-22-33' },
+    blocked: { name: 'Пётр Петров', phone: '8 999 666-77-88' }
+  };
+  const animals = {
+    barsik: { id: 'a1111111-1111-1111-1111-111111111111', name: 'Барсик' },
+    luna: { id: 'a2222222-2222-4222-8222-222222222222', name: 'Луна' }
+  };
+  const stopList = new Set(['+79996667788']);
+  const showJson = (id, value) => { byId(id).textContent = JSON.stringify(value, null, 2); };
+
+  function normalizePhone(raw) {
+    const digits = raw.trim().replace(/[\s()-]/g, '');
+    return /^(?:\+7|8)\d{10}$/.test(digits) ? '+7' + digits.slice(-10) : null;
+  }
+
+  function filterApplication(phone) {
+    return stopList.has(phone) ? 'Отклонена' : 'На рассмотрении';
+  }
+
+  function appendItem(list, message) {
+    const item = document.createElement('li');
+    item.textContent = message;
+    list.append(item);
+    list.hidden = false;
+  }
+
+  const adoptionForm = byId('adoption-form');
+  const adoptionResult = byId('adoption-result');
+  const adoptionQueue = byId('adoption-queue');
+  let applicationNumber = 0;
+  adoptionForm.elements.candidate.addEventListener('change', () => {
+    adoptionForm.elements.phone.value = candidates[adoptionForm.elements.candidate.value].phone;
+  });
+  adoptionForm.addEventListener('submit', event => {
+    event.preventDefault();
+    const phone = normalizePhone(adoptionForm.elements.phone.value);
+    if (!phone) {
+      adoptionResult.textContent = 'Введите российский номер в формате +7 или 8 и ещё 10 цифр.';
+      adoptionForm.elements.phone.focus();
+      return;
+    }
+    const candidate = candidates[adoptionForm.elements.candidate.value];
+    const animal = animals[adoptionForm.elements.animal.value];
+    const status = filterApplication(phone);
+    const id = ++applicationNumber;
+    showJson('adoption-json', { client_name: candidate.name, client_phone: phone, animal_id: animal.id });
+    if (status === 'Отклонена') {
+      adoptionResult.textContent = `Заявка №${id} отклонена. Номер найден в стоп-листе. Заявка скрыта из очереди менеджера.`;
+      return;
+    }
+    adoptionResult.textContent = `Заявка №${id} на рассмотрении. Менеджер видит её в очереди.`;
+    appendItem(adoptionQueue, `№${id} · ${candidate.name} · ${animal.name} · ${status}`);
+    byId('queue-empty').hidden = true;
+    byId('queue-count').textContent = `(${adoptionQueue.childElementCount})`;
+  });
+  byId('adoption-reset').addEventListener('click', () => {
+    adoptionForm.reset();
+    adoptionQueue.replaceChildren();
+    adoptionQueue.hidden = true;
+    byId('queue-empty').hidden = false;
+    byId('queue-count').textContent = '(0)';
+    applicationNumber = 0;
+    adoptionResult.textContent = 'Выберите кандидата и отправьте заявку.';
+    byId('adoption-json').textContent = 'Отправьте тестовую заявку.';
+  });
+
+</script>
+</body>
+</html>
